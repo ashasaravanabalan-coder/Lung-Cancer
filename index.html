@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Lung AI - Clinical Decision Support System</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome & Material Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- html2pdf.js for Medical Report PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="blue-theme">
+    
+    <!-- App Container -->
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <i class="fa-solid fa-lungs logo-icon"></i>
+                <div class="logo-text">
+                    <h1>AEGIS LUNG AI</h1>
+                    <span>Clinical Decision Support System</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div class="disclaimer-badge">
+                    <i class="fa-solid fa-circle-info"></i> Research Use Only
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- SECTION 1: HOME PAGE -->
+            <section id="section-home" class="screen-section active">
+                <div class="hero-container">
+                    <h2>AI-Powered Lung Cancer Diagnosis, Genomics & 3D Visualization System</h2>
+                    <p class="hero-desc">This intelligent clinical decision support system analyzes patient information, symptoms, medical history, CT scans, clinical reports, and gene mutation results to predict lung cancer type, stage, risk level, affected lung, and generate treatment recommendations with interactive 3D visualization.</p>
+                    <div class="action-buttons-center">
+                        <button id="btn-start-form" class="btn btn-primary btn-large">
+                            <i class="fa-solid fa-clipboard-user"></i> Full Patient Form
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: FULL PATIENT FORM -->
+            <section id="section-form" class="screen-section">
+                <!-- Stepper Navigation -->
+                <nav class="stepper" id="stepper-nav">
+                    <div class="step active" data-step="1"><span class="step-num">1</span><span class="step-label">Patient Details</span></div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2"><span class="step-num">2</span><span class="step-label">Medical History</span></div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3"><span class="step-num">3</span><span class="step-label">Symptoms</span></div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="4"><span class="step-num">4</span><span class="step-label">Clinical Data</span></div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="5"><span class="step-num">5</span><span class="step-label">Gene Tests</span></div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="6"><span class="step-num">6</span><span class="step-label">Submit</span></div>
+                </nav>
+
+                <div class="form-main">
+                    <!-- STEP 1: Basic Patient Details -->
+                    <section class="form-step active" id="step-1">
+                        <div class="section-title"><span class="material-icons-outlined">person</span> Basic Patient Details</div>
+                        <div class="card">
+                            <div class="form-grid cols-2">
+                                <div class="field required">
+                                    <label for="patientName">Patient Name</label>
+                                    <input type="text" id="patientName" placeholder="Enter full name" required>
+                                    <span class="field-error" id="err-patientName">Patient name is required</span>
+                                </div>
+                                <div class="field">
+                                    <label for="patientId">Patient ID (Auto Generated)</label>
+                                    <input type="text" id="patientId" readonly>
+                                </div>
+                            </div>
+                            <div class="form-grid cols-3">
+                                <div class="field required">
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age" min="1" max="120" placeholder="e.g. 55" required>
+                                    <span class="field-error" id="err-age">Age is required</span>
+                                </div>
+                                <div class="field">
+                                    <label>Gender</label>
+                                    <div class="radio-group">
+                                        <label class="radio-item"><input type="radio" name="gender" value="Male"><span class="radio-custom"></span> Male</label>
+                                        <label class="radio-item"><input type="radio" name="gender" value="Female"><span class="radio-custom"></span> Female</label>
+                                        <label class="radio-item"><input type="radio" name="gender" value="Other"><span class="radio-custom"></span> Other</label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="bloodGroup">Blood Group</label>
+                                    <select id="bloodGroup">
+                                        <option value="">Select</option>
+                                        <option>A+</option><option>A-</option>
+                                        <option>B+</option><option>B-</option>
+                                        <option>AB+</option><option>AB-</option>
+                                        <option>O+</option><option>O-</option>
+                                        <option>Unknown</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-grid cols-2">
+                                <div class="field">
+                                    <label for="height">Height (cm)</label>
+                                    <input type="number" id="height" min="50" max="250" placeholder="e.g. 170">
+                                </div>
+                                <div class="field">
+                                    <label for="weight">Weight (kg)</label>
+                                    <input type="number" id="weight" min="10" max="300" placeholder="e.g. 70">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 2: Medical History -->
+                    <section class="form-step" id="step-2">
+                        <div class="section-title"><span class="material-icons-outlined">history</span> Medical History</div>
+                        <div class="card">
+                            <div class="form-grid cols-2">
+                                <div class="field">
+                                    <label>Smoking History</label>
+                                    <div class="radio-group">
+                                        <label class="radio-item"><input type="radio" name="smoking" value="Yes" id="smokingYes"><span class="radio-custom"></span> Yes</label>
+                                        <label class="radio-item"><input type="radio" name="smoking" value="No" checked><span class="radio-custom"></span> No</label>
+                                    </div>
+                                </div>
+                                <div class="field conditional-field" id="smokingDetails" style="display:none">
+                                    <div class="form-grid cols-2" style="gap:12px">
+                                        <div class="field">
+                                            <label for="cigsPerDay">Cigarettes / Day</label>
+                                            <input type="number" id="cigsPerDay" min="0" placeholder="e.g. 10">
+                                        </div>
+                                        <div class="field">
+                                            <label for="smokingYears">Years of Smoking</label>
+                                            <input type="number" id="smokingYears" min="0" placeholder="e.g. 20">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-grid cols-2">
+                                <div class="field">
+                                    <label>Alcohol Consumption</label>
+                                    <div class="radio-group">
+                                        <label class="radio-item"><input type="radio" name="alcohol" value="Yes"><span class="radio-custom"></span> Yes</label>
+                                        <label class="radio-item"><input type="radio" name="alcohol" value="No" checked><span class="radio-custom"></span> No</label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Family History of Lung Cancer</label>
+                                    <div class="radio-group">
+                                        <label class="radio-item"><input type="radio" name="familyHistory" value="Yes"><span class="radio-custom"></span> Yes</label>
+                                        <label class="radio-item"><input type="radio" name="familyHistory" value="No" checked><span class="radio-custom"></span> No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-grid cols-2">
+                                <div class="field">
+                                    <label for="prevCancer">Previous Cancer History</label>
+                                    <select id="prevCancer">
+                                        <option value="None">None</option>
+                                        <option>Lung Cancer</option><option>Breast Cancer</option>
+                                        <option>Colon Cancer</option><option>Prostate Cancer</option>
+                                        <option>Skin Cancer</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="airPollution">Air Pollution Exposure</label>
+                                    <select id="airPollution">
+                                        <option value="Low">Low</option>
+                                        <option value="Moderate">Moderate</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Occupational Exposure</label>
+                                <div class="checkbox-group">
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Asbestos"><span class="check-custom"></span> Asbestos</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Silica Dust"><span class="check-custom"></span> Silica Dust</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Chemical Exposure"><span class="check-custom"></span> Chemical Exposure</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Mining"><span class="check-custom"></span> Mining</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Construction"><span class="check-custom"></span> Construction</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Factory Work"><span class="check-custom"></span> Factory Work</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="Radiation"><span class="check-custom"></span> Radiation</label>
+                                    <label class="check-item"><input type="checkbox" name="occupation" value="None"><span class="check-custom"></span> None</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Existing Diseases</label>
+                                <div class="checkbox-group">
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="COPD"><span class="check-custom"></span> COPD</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="Asthma"><span class="check-custom"></span> Asthma</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="Tuberculosis"><span class="check-custom"></span> Tuberculosis</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="Diabetes"><span class="check-custom"></span> Diabetes</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="Hypertension"><span class="check-custom"></span> Hypertension</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="Heart Disease"><span class="check-custom"></span> Heart Disease</label>
+                                    <label class="check-item"><input type="checkbox" name="diseases" value="None"><span class="check-custom"></span> None</label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 3: Symptoms -->
+                    <section class="form-step" id="step-3">
+                        <div class="section-title"><span class="material-icons-outlined">sick</span> Symptoms</div>
+                        <div class="card">
+                            <div class="field">
+                                <label>Select all symptoms the patient is experiencing</label>
+                                <div class="checkbox-group symptom-grid">
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Persistent Cough"><span class="check-custom"></span> Persistent Cough</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Coughing Blood"><span class="check-custom"></span> Coughing Blood</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Chest Pain"><span class="check-custom"></span> Chest Pain</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Shortness of Breath"><span class="check-custom"></span> Shortness of Breath</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Wheezing"><span class="check-custom"></span> Wheezing</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Fatigue"><span class="check-custom"></span> Fatigue</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Weight Loss"><span class="check-custom"></span> Weight Loss</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Loss of Appetite"><span class="check-custom"></span> Loss of Appetite</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Fever"><span class="check-custom"></span> Fever</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Hoarseness of Voice"><span class="check-custom"></span> Hoarseness of Voice</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Bone Pain"><span class="check-custom"></span> Bone Pain</label>
+                                    <label class="check-item"><input type="checkbox" name="symptoms" value="Headache"><span class="check-custom"></span> Headache</label>
+                                </div>
+                            </div>
+                            <div class="form-grid cols-2">
+                                <div class="field">
+                                    <label for="severity">Severity Level</label>
+                                    <select id="severity">
+                                        <option value="Mild">Mild</option>
+                                        <option value="Moderate">Moderate</option>
+                                        <option value="Severe">Severe</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="duration">Duration of Symptoms</label>
+                                    <select id="duration">
+                                        <option value="Less than 2 Weeks">Less than 2 Weeks</option>
+                                        <option value="2-4 Weeks">2-4 Weeks</option>
+                                        <option value="1-3 Months">1-3 Months</option>
+                                        <option value="More than 3 Months">More than 3 Months</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 4: Clinical Data -->
+                    <section class="form-step" id="step-4">
+                        <div class="section-title"><span class="material-icons-outlined">radiology</span> Clinical Data Uploads</div>
+                        <div class="card">
+                            <p class="upload-note">Upload relevant imaging and diagnostic files. Accepted: JPG, PNG, DICOM, PDF</p>
+                            <div class="form-grid cols-2">
+                                <div class="upload-box" id="upload-ct">
+                                    <span class="material-icons-outlined upload-icon">ct_scan</span>
+                                    <span class="upload-label">CT Scan</span>
+                                    <input type="file" id="fileCT" accept=".jpg,.jpeg,.png,.dcm,.pdf" class="file-input">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('fileCT').click()">
+                                        <span class="material-icons-outlined">cloud_upload</span> Choose File
+                                    </button>
+                                    <span class="file-name" id="fname-ct">No file selected</span>
+                                </div>
+                                <div class="upload-box" id="upload-xray">
+                                    <span class="material-icons-outlined upload-icon">image</span>
+                                    <span class="upload-label">Chest X-Ray</span>
+                                    <input type="file" id="fileXray" accept=".jpg,.jpeg,.png,.dcm,.pdf" class="file-input">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('fileXray').click()">
+                                        <span class="material-icons-outlined">cloud_upload</span> Choose File
+                                    </button>
+                                    <span class="file-name" id="fname-xray">No file selected</span>
+                                </div>
+                                <div class="upload-box" id="upload-biopsy">
+                                    <span class="material-icons-outlined upload-icon">biotech</span>
+                                    <span class="upload-label">Biopsy Report</span>
+                                    <input type="file" id="fileBiopsy" accept=".jpg,.jpeg,.png,.dcm,.pdf" class="file-input">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('fileBiopsy').click()">
+                                        <span class="material-icons-outlined">cloud_upload</span> Choose File
+                                    </button>
+                                    <span class="file-name" id="fname-biopsy">No file selected</span>
+                                </div>
+                                <div class="upload-box" id="upload-pet">
+                                    <span class="material-icons-outlined upload-icon">scanner</span>
+                                    <span class="upload-label">PET Scan</span>
+                                    <input type="file" id="filePET" accept=".jpg,.jpeg,.png,.dcm,.pdf" class="file-input">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('filePET').click()">
+                                        <span class="material-icons-outlined">cloud_upload</span> Choose File
+                                    </button>
+                                    <span class="file-name" id="fname-pet">No file selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 5: Gene Test Results -->
+                    <section class="form-step" id="step-5">
+                        <div class="section-title"><span class="material-icons-outlined">genetics</span> Gene Test Results</div>
+                        <div class="gene-cards-grid">
+                            <!-- EGFR -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">E</span> EGFR</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="egfr-result">Result</label>
+                                        <select id="egfr-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label for="egfr-mutation">Mutation Type</label>
+                                        <select id="egfr-mutation"><option value="">Select</option><option>Exon 18</option><option>Exon 19 Deletion</option><option>Exon 20 Insertion</option><option>Exon 21 L858R</option><option>T790M</option><option>Unknown</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ALK -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">A</span> ALK</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="alk-result">Result</label>
+                                        <select id="alk-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label>Fusion Present</label>
+                                        <div class="radio-group compact">
+                                            <label class="radio-item"><input type="radio" name="alk-fusion" value="Yes"><span class="radio-custom"></span> Yes</label>
+                                            <label class="radio-item"><input type="radio" name="alk-fusion" value="No" checked><span class="radio-custom"></span> No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ROS1 -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">R</span> ROS1</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="ros1-result">Result</label>
+                                        <select id="ros1-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label>Fusion Present</label>
+                                        <div class="radio-group compact">
+                                            <label class="radio-item"><input type="radio" name="ros1-fusion" value="Yes"><span class="radio-custom"></span> Yes</label>
+                                            <label class="radio-item"><input type="radio" name="ros1-fusion" value="No" checked><span class="radio-custom"></span> No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- MET -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">M</span> MET</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="met-result">Result</label>
+                                        <select id="met-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label for="met-alteration">Alteration Type</label>
+                                        <select id="met-alteration"><option value="None">None</option><option>Amplification</option><option>Exon 14 Skipping</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- BRAF -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">B</span> BRAF</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="braf-result">Result</label>
+                                        <select id="braf-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label for="braf-mutation">Mutation Type</label>
+                                        <select id="braf-mutation"><option value="Unknown">Unknown</option><option>V600E</option><option>Non-V600E</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- KRAS -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">K</span> KRAS</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="kras-result">Result</label>
+                                        <select id="kras-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label for="kras-mutation">Mutation Type</label>
+                                        <select id="kras-mutation"><option value="">Select</option><option>G12C</option><option>G12D</option><option>G12V</option><option>Other</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TP53 -->
+                            <div class="gene-card-entry">
+                                <div class="gene-card-header"><span class="gene-icon">T</span> TP53</div>
+                                <div class="gene-card-body">
+                                    <div class="field"><label for="tp53-result">Result</label>
+                                        <select id="tp53-result"><option value="Negative">Negative</option><option value="Positive">Positive</option></select>
+                                    </div>
+                                    <div class="field"><label for="tp53-mutation">Mutation Type</label>
+                                        <select id="tp53-mutation"><option value="">Select</option><option>Missense</option><option>Nonsense</option><option>Frameshift</option><option>Splice Site</option><option>Unknown</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 6: Final Submit -->
+                    <section class="form-step" id="step-6">
+                        <div class="section-title"><span class="material-icons-outlined">task_alt</span> Review & Submit</div>
+                        <div class="card">
+                            <div class="review-summary" id="reviewSummary">
+                                <!-- filled by JS -->
+                            </div>
+                            <div class="declaration-box">
+                                <label class="check-item declaration-check">
+                                    <input type="checkbox" id="declarationCheck">
+                                    <span class="check-custom"></span>
+                                    I confirm that the provided information is accurate and complete. I understand this system is for research and educational purposes only.
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Form Footer Nav -->
+                <div class="form-footer">
+                    <button class="btn btn-outline" id="btnPrev" disabled><span class="material-icons-outlined">arrow_back</span> Previous</button>
+                    <div class="footer-right">
+                        <button class="btn btn-next" id="btnNext">Next <span class="material-icons-outlined">arrow_forward</span></button>
+                        <button class="btn btn-submit" id="btnSubmit" style="display:none" disabled><span class="material-icons-outlined">online_prediction</span> Analyze Data</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: PREDICTION DASHBOARD -->
+            <section id="section-dashboard" class="screen-section">
+                <!-- Loading Overlay -->
+                <div id="ai-loading-screen" class="ai-loading">
+                    <div class="spinner"></div>
+                    <h3><i class="fa-solid fa-brain"></i> AI Engine Processing...</h3>
+                    <p>Analyzing patient history, symptoms, clinical reports and genomic data.</p>
+                </div>
+
+                <div id="dashboard-content" style="display:none;">
+                    <div class="dashboard-grid">
+                        <!-- COL 1: Patient Summary & Clinical Findings -->
+                        <div class="dashboard-col flex-column gap-20">
+                            
+                            <!-- Patient Summary Card -->
+                            <div class="dashboard-card">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-hospital-user"></i> Patient Summary</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="summary-list">
+                                        <div class="summary-item"><span class="label">Name:</span> <span id="dash-name" class="value">--</span></div>
+                                        <div class="summary-item"><span class="label">ID:</span> <span id="dash-id" class="value">--</span></div>
+                                        <div class="summary-item"><span class="label">Age/Gender:</span> <span id="dash-age-gender" class="value">--</span></div>
+                                        <div class="summary-item"><span class="label">Blood Group:</span> <span id="dash-blood" class="value">--</span></div>
+                                        <div class="summary-item"><span class="label">Smoking:</span> <span id="dash-smoking" class="value">--</span></div>
+                                        <div class="summary-item"><span class="label">Prev Cancer:</span> <span id="dash-prev-cancer" class="value">--</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cancer Prediction Card -->
+                            <div class="dashboard-card highlight-card">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-microscope"></i> Cancer Prediction</h3>
+                                </div>
+                                <div class="card-body prediction-stats">
+                                    <div class="pred-stat">
+                                        <span class="label">Probability</span>
+                                        <span id="dash-prob" class="value huge text-red">--</span>
+                                    </div>
+                                    <div class="pred-stat">
+                                        <span class="label">Cancer Type</span>
+                                        <span id="dash-type" class="value bold">--</span>
+                                    </div>
+                                    <div class="pred-stat">
+                                        <span class="label">Subtype</span>
+                                        <span id="dash-subtype" class="value text-accent">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Risk Assessment Card -->
+                            <div class="dashboard-card">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-triangle-exclamation"></i> Risk Assessment</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="risk-meter">
+                                        <span class="label">Risk Level:</span>
+                                        <span id="dash-risk-level" class="status-chip high">--</span>
+                                    </div>
+                                    <div class="risk-meter mt-10">
+                                        <span class="label">TNM Stage:</span>
+                                        <span id="dash-stage" class="value bold">--</span>
+                                    </div>
+                                    <div class="risk-meter mt-10">
+                                        <span class="label">Metastasis:</span>
+                                        <span id="dash-metastasis" class="value">--</span>
+                                    </div>
+                                    <div class="risk-meter mt-10">
+                                        <span class="label">Lymph Nodes:</span>
+                                        <span id="dash-lymph" class="value">--</span>
+                                    </div>
+                                    <div class="risk-meter mt-10">
+                                        <span class="label">Confidence Score:</span>
+                                        <div class="progress-bar-wrap">
+                                            <div class="progress-fill" id="dash-confidence-fill" style="width:0%"></div>
+                                        </div>
+                                        <span id="dash-confidence-text" class="progress-text">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- COL 2: 3D Visualization -->
+                        <div class="dashboard-col col-center flex-column gap-20">
+                            <div class="dashboard-card flex-grow">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-cube"></i> Interactive 3D Visualization</h3>
+                                </div>
+                                <div class="three-canvas-container" id="lung-3d-container">
+                                    <div class="loading-overlay" id="viewer-loading">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Rendering Organ Topology...
+                                    </div>
+                                    <div id="labels-container" class="labels-layer"></div>
+                                </div>
+                                <div class="controls-panel">
+                                    <div class="control-row">
+                                        <span>Affected Lung: <strong id="dash-affected-lung" class="text-red">--</strong></span>
+                                        <span>Lobe: <strong id="dash-affected-lobe">--</strong></span>
+                                    </div>
+                                    <div class="control-grid mt-10">
+                                        <button class="btn btn-outline btn-small" id="btn-reset-view"><i class="fa-solid fa-rotate-left"></i> Reset View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COL 3: Genes & Treatment -->
+                        <div class="dashboard-col flex-column gap-20">
+                            
+                            <!-- Gene Mutation Card -->
+                            <div class="dashboard-card">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-dna"></i> Gene Mutation Summary</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="dash-genes-list" class="gene-tags">
+                                        <!-- dynamic chips -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Treatment Recommendation Card -->
+                            <div class="dashboard-card flex-grow">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-user-doctor"></i> Treatment Recommendations</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul id="dash-treatments" class="treatment-list">
+                                        <!-- dynamic list items -->
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Clinical Findings -->
+                            <div class="dashboard-card">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-file-medical"></i> Clinical Findings</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p id="dash-clinical-summary" class="text-small text-muted">--</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-footer-actions">
+                        <button id="btn-download-pdf" class="btn btn-primary btn-large">
+                            <i class="fa-solid fa-file-pdf"></i> Download Final PDF Report
+                        </button>
+                        <button id="btn-new-patient" class="btn btn-outline btn-large">
+                            <i class="fa-solid fa-plus"></i> New Patient
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Hidden PDF Report Template -->
+    <div id="pdf-report-template" style="display:none;">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <h2>Aegis Hospital - Oncology Department</h2>
+                <h3>Clinical Decision Support - Final Report</h3>
+                <p>Date: <span id="pdf-date"></span></p>
+            </div>
+            <div class="pdf-section">
+                <h4>Patient Details</h4>
+                <p><strong>Name:</strong> <span id="pdf-name"></span> | <strong>ID:</strong> <span id="pdf-id"></span></p>
+                <p><strong>Age:</strong> <span id="pdf-age"></span> | <strong>Gender:</strong> <span id="pdf-gender"></span></p>
+            </div>
+            <div class="pdf-section">
+                <h4>AI Prediction</h4>
+                <p><strong>Probability:</strong> <span id="pdf-prob"></span></p>
+                <p><strong>Diagnosis:</strong> <span id="pdf-diagnosis"></span></p>
+                <p><strong>Stage:</strong> <span id="pdf-stage"></span></p>
+                <p><strong>Affected Region:</strong> <span id="pdf-region"></span></p>
+            </div>
+            <div class="pdf-section">
+                <h4>Gene Mutations</h4>
+                <p id="pdf-genes"></p>
+            </div>
+            <div class="pdf-section">
+                <h4>Recommended Treatment Plan</h4>
+                <ul id="pdf-treatment"></ul>
+            </div>
+            <div class="pdf-footer">
+                <p>This report is generated by Aegis Lung AI and must be reviewed by a certified oncologist.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="three-lung.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
